@@ -4,3 +4,27 @@ Author: Quang
 Description: Sản phẩm độc quyền của Quang Hoang
 Version: 1.0
 */
+
+/* single product page*/
+
+button.single_add_to_cart_button.button.alt {
+    background: black;
+    font-size: 14px;
+}
+li.product.product-type-simple{
+    text-align: center;
+    border-radius: 8px; /* bo góc nhìn đẹp hơn */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+a.button.product_type_simple.add_to_cart_button.ajax_add_to_cart {
+    background: black;
+    color: white;
+    font-size: 15px;
+}
+
+h2.woocommerce-loop-product__title {
+    color: black;
+}
+
+span.price {
+}
