@@ -4,12 +4,12 @@ Template Name: Home page
 */
 ?>
 <?php get_header() ?>
-<div class="homepage-poster mb-5">
+<div class="homepage-poster mb-5 pt-5">
     <div class="poster-content d-flex align-items-center justify-content-center text-center text-white">
         <div>
             <h1 class="display-4 fw-bold">Chào mừng đến với cửa hàng của chúng tôi</h1>
             <p class="lead">Khám phá sản phẩm mới nhất và ưu đãi hấp dẫn</p>
-            <a href="<?php echo esc_url(home_url('/shop/')); ?>" class="btn btn-light btn-lg mt-3">Mua ngay</a>
+            <a href="<?php echo get_permalink(get_option('woocommerce_shop_page_id')); ?>" class="btn btn-light btn-lg mt-3">Mua ngay</a>
         </div>
     </div>
 </div>

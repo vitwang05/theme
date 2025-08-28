@@ -5,7 +5,7 @@ remove_action("woocommerce_sidebar", "woocommerce_get_sidebar");
 function add_container_row_div_classes()
 {
 
-    echo "<div class='container owt-container'> <div class='row owt-row'>";
+    echo "<div class='container owt-container mt-5'> <div class='row owt-row'>";
 }
 
 
