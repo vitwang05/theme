@@ -2,6 +2,7 @@
 
 function simple_bootstrap_theme_load_script()
 {
+
     wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css', array(), '6.4.0');
     // Lấy đường dẫn vật lý và URL của CSS
     $css_path = get_template_directory() . "/asset/css/styles.css";
@@ -40,6 +41,9 @@ function simple_bootstrap_theme_load_script()
             true
         );
     }
+
+    wp_enqueue_style('swiper-css', 'https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css');
+    wp_enqueue_script('swiper-js', 'https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js', array('jquery'), null, true);
 }
 
 add_action("wp_enqueue_scripts", "simple_bootstrap_theme_load_script");
@@ -157,14 +161,14 @@ function simple_bootstrap_theme_load_wp_customizer($wp_customize)
         "title" => "Social Section",
         "description" => "This is a social section"
     ));
-    
+
     // add setting
     $wp_customize->add_setting("set_facebook", array(
         "type" => "theme_mod",
         "default" => "",
         "sanitize_callback" => "sanitize_text_field",
     ));
-    
+
     // add control
     $wp_customize->add_control("set_facebook", array(
         "label" => "Facebook",
@@ -178,30 +182,27 @@ function simple_bootstrap_theme_load_wp_customizer($wp_customize)
         "default" => "",
         "sanitize_callback" => "sanitize_text_field",
     ));
-    
+
     $wp_customize->add_control("set_instagram", array(
         "label" => "Instagram",
         "description" => "Please fill the instagram link",
         "section" => "sec_social",
         "type" => "text",
     ));
-    
+
     $wp_customize->add_setting("set_tiktok", array(
         "type" => "theme_mod",
         "default" => "",
         "sanitize_callback" => "sanitize_text_field",
     ));
-    
-    
+
+
     $wp_customize->add_control("set_tiktok", array(
         "label" => "Twitter",
         "description" => "Please fill the twitter link",
         "section" => "sec_social",
         "type" => "text",
     ));
-    
-    
 }
 
 add_action("customize_register", "simple_bootstrap_theme_load_wp_customizer");
-

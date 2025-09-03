@@ -1,125 +1,96 @@
-// WooCommerce Product Slider - Dynamic Width Version (Multi Slider & Responsive)
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.woocommerce-product-slider').forEach(slider => {
-        const sliderWrapper = slider.querySelector('.slider-wrapper');
-        const prevBtn = slider.querySelector('.slider-nav.prev');
-        const nextBtn = slider.querySelector('.slider-nav.next');
+document.addEventListener("DOMContentLoaded", function() {
+    // Main Slider - Category Slider
+    var mainSwiper = new Swiper(".main-slider", {
+        loop: true,
+        autoplay: {
+            delay: 4000,
+            disableOnInteraction: false,
+        },
+        effect: "slide"
+    });
 
-        if (!sliderWrapper || !prevBtn || !nextBtn) return;
-
-        let currentPosition = 0;
-        let autoPlayInterval;
-        let isAutoPlaying = true;
-        const gap = 15; // Khoảng cách giữa các item (px)
-
-        // ======= Cấu hình responsive =======
-        function getVisibleItems() {
-            const w = window.innerWidth;
-            if (w >= 1200) return 5; // Desktop lớn
-            if (w >= 992) return 4;  // Laptop/tablet lớn
-            if (w >= 768) return 3;  // Tablet
-            if (w >= 480) return 2;  // Mobile
-            return 2;                 // Mobile nhỏ
-        }
-
-        let visibleItems = getVisibleItems();
-
-        // Tính width item động
-        function getItemWidth() {
-            const containerWidth = sliderWrapper.parentElement.offsetWidth;
-            return (containerWidth - gap * (visibleItems - 1)) / visibleItems;
-        }
-
-        // Tính max position
-        function getMaxPosition() {
-            const totalItems = sliderWrapper.children.length;
-            return Math.max(0, totalItems - visibleItems);
-        }
-
-        // Cập nhật slider
-        function updateSlider() {
-            const itemWidth = getItemWidth();
-
-            // Cập nhật transform
-            sliderWrapper.style.transform = `translateX(-${currentPosition * (itemWidth + gap)}px)`;
-
-            // Cập nhật width và margin cho từng item
-            Array.from(sliderWrapper.children).forEach((item, index) => {
-                item.style.width = `${itemWidth}px`;
-                item.style.marginRight = (index < sliderWrapper.children.length - 1) ? `${gap}px` : '0';
-                item.style.flexShrink = '0';
-            });
-
-            // Update button states
-            prevBtn.style.opacity = '1';
-            prevBtn.style.pointerEvents = 'auto';
-            nextBtn.style.opacity = '1';
-            nextBtn.style.pointerEvents = 'auto';
-        }
-
-        // Slide next
-        function slideNext() {
-            const maxPosition = getMaxPosition();
-            if (currentPosition < maxPosition) {
-                currentPosition++;
-            } else {
-                currentPosition = 0; // Quay về đầu
+    // Latest Arrivals Swiper
+    const swiper = new Swiper(".latest-swiper", {
+        slidesPerView: 1,
+        spaceBetween: 20,
+        centeredSlides: true,
+        loop: true,
+        loopAdditionalSlides: 2,
+        loopedSlides: 4,
+        autoplay: {
+            delay: 3000,
+            disableOnInteraction: false,
+            pauseOnMouseEnter: true,
+        },
+        pagination: {
+            el: ".swiper-pagination",
+            clickable: true,
+            dynamicBullets: true,
+        },
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+        },
+        breakpoints: {
+            576: {
+                slidesPerView: 2,
+                spaceBetween: 10,
+                centeredSlides: true,
+                loopAdditionalSlides: 2,
+            },
+            768: {
+                slidesPerView: 3,
+                spaceBetween: 15,
+                centeredSlides: true,
+                loopAdditionalSlides: 2,
+            },
+            992: {
+                slidesPerView: 4,
+                spaceBetween: 20,
+                centeredSlides: true,
+                loopAdditionalSlides: 2,
+            },
+            1200: {
+                slidesPerView: 5,
+                spaceBetween: 20,
+                centeredSlides: true,
+                loopAdditionalSlides: 2,
             }
-            updateSlider();
-        }
-
-        // Slide prev
-        function slidePrev() {
-            const maxPosition = getMaxPosition();
-            if (currentPosition > 0) {
-                currentPosition--;
-            } else {
-                currentPosition = maxPosition; // Quay về cuối
+        },
+        // Performance optimizations
+        watchSlidesProgress: true,
+        watchSlidesVisibility: true,
+        preloadImages: false,
+        lazy: {
+            loadPrevNext: true,
+        },
+        // Smooth transitions
+        speed: 600,
+        effect: 'slide',
+        // Center scale effect with centeredSlides
+        on: {
+            setTranslate: function() {
+                const slides = this.slides;
+                for (let i = 0; i < slides.length; i++) {
+                    const slide = slides[i];
+                    const slideProgress = slide.progress;
+                    const absProgress = Math.abs(slideProgress);
+                    
+                    // Scale effect - center slide is larger
+                    let scale = 1 - absProgress * 0.15;
+                    scale = Math.max(0.85, scale);
+                    
+                    slide.style.transform = `scale(${scale})`;
+                    slide.style.opacity = 1 - absProgress * 0.2;
+                    slide.style.zIndex = absProgress < 0.3 ? 2 : 1;
+                }
+            },
+            setTransition: function(duration) {
+                const slides = this.slides;
+                for (let i = 0; i < slides.length; i++) {
+                    slides[i].style.transition = `${duration}ms`;
+                }
             }
-            updateSlider();
         }
-
-        // Auto-play
-        function startAutoPlay() {
-            if (autoPlayInterval) clearInterval(autoPlayInterval);
-            autoPlayInterval = setInterval(slideNext, 3000);
-            isAutoPlaying = true;
-        }
-
-        function stopAutoPlay() {
-            if (autoPlayInterval) {
-                clearInterval(autoPlayInterval);
-                autoPlayInterval = null;
-            }
-            isAutoPlaying = false;
-        }
-
-        // Event listeners
-        nextBtn.addEventListener('click', () => { stopAutoPlay(); slideNext(); startAutoPlay(); });
-        prevBtn.addEventListener('click', () => { stopAutoPlay(); slidePrev(); startAutoPlay(); });
-
-        sliderWrapper.addEventListener('mouseenter', stopAutoPlay);
-        sliderWrapper.addEventListener('mouseleave', startAutoPlay);
-        prevBtn.addEventListener('mouseenter', stopAutoPlay);
-        nextBtn.addEventListener('mouseenter', stopAutoPlay);
-        prevBtn.addEventListener('mouseleave', startAutoPlay);
-        nextBtn.addEventListener('mouseleave', startAutoPlay);
-
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) stopAutoPlay();
-            else startAutoPlay();
-        });
-
-        // Resize window
-        window.addEventListener('resize', () => {
-            visibleItems = getVisibleItems();
-            const maxPosition = getMaxPosition();
-            if (currentPosition > maxPosition) currentPosition = maxPosition;
-            updateSlider();
-        });
-
-        // Khởi tạo
-        updateSlider();
-        startAutoPlay();
     });
 });
